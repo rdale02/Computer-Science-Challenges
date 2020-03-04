@@ -1,0 +1,96 @@
+﻿<style>
+    table, th, td {
+        border: 1px solid black;
+        border-collapse: collapse;
+    }
+</style>
+{% extends "layout.html" %}
+
+{% block content %}
+<body>
+    <h1 style="font-family:Candara;font-size:24px;font-style:oblique;">Tutorial 2: Named Entity Recognition</h1>
+    <h2 style="font-family:Candara,serif;font-size:20px;font-style:italic,oblique;">What is NER?</h2>
+    <p style="font-family:Candara;font-size:16px;font-style:normal;">
+        The process of identifying relevant nouns and classifying them by their nature (Person, Place, Money etc)
+    </p>
+    <p style="font-family:Candara;font-size:16px">For an interactive demonstration of NER in action, enter some text below. SpaCy will attempt to identify proper nouns by their classifier.</p>
+    <form method="POST" action="/extract">
+        <textarea rows="5" cols="50" name="rawtext">
+
+        </textarea>
+        <button type="reset" style="background-color:aquamarine">Reset</button>
+        <button type="submit" style="background-color:aquamarine">Submit</button>
+    </form>
+    <p style="font-family:Candara;font-size:16px;">
+        Have you noticed any entity that SpaCy fails to classify correctly?
+        The following tutorial will teach you how to make a model that won't make that mistake as often!
+    </p>
+    <h3 style="font-family:Candara;font-size:18px;font-style:oblique;">Step-by-Step Guide: Train SpaCy to Recognise a new Named Entity</h3>
+    <p style="font-family:Candara;font-size:16px;">
+        1. Import the packages in the screenshot below. This tutorial also requires the English language SpaCy pack. Help with installation can be found
+        in the Troubleshooting section. Random is used to shuffle the Training Data, Path is used for directories, SpaCy is your NLP library and
+        Tqdm is for the progress bars which appear in the console while the dataset is being processed.
+    </p>
+    <img src="{{url_for('static',filename='Training1.jpg')}}" />
+    <p style="font-family:Candara;font-size:16px;">
+        2. Set the SpaCy Language to English.
+    </p>
+    <img src="{{url_for('static',filename='Training2.jpg')}}" />
+    <p style="font-family:Candara;font-size:16px;">
+        3. Create a List of Training Data examples. These should include the entity that you want to train for, its position and its classifier.
+        The format for each entry in the list is as follows: ("TEXT",{'entities': [(x,y,'TYPE'), ...]}) where x is the starting position of the word and
+        y is the end position of the word.
+    </p>
+    <img src="{{url_for('static',filename='Training3.jpg')}}" height="220" width="900" />
+    <p style="font-family:Candara;font-size:16px;">
+        4. Create a List of Test Data cases. These are in the same format as the Training Data. It is best to make them somewhat different to the sentences that
+        the machine has already processed so that it doesn't reach its decision based on where the word is in the sentence.
+        It is also useful to break some Test Data off into a Validation Set because you can optimise your model.
+    </p>
+    <img src="{{url_for('static',filename='Training4.jpg')}}" height="220" width="900" />
+    <p style="font-family:Candara;font-size:16px;">
+        5. Define a function which loads in the model you want to train. If you pass in none, it'll train SpaCy's existing model. Otherwise,
+        it will load a blank version of an English SpaCy Language Class. Return the loaded model.
+    </p>
+    <img src="{{url_for('static',filename='Training6.jpg')}}" />
+    <p style="font-family:Candara;font-size:16px;">
+        6. Ensure that 'ner' is in the pipeline and if it isn't, add it. Return the ner pipe.
+    </p>
+    <img src="{{url_for('static',filename='Training7.jpg')}}" />
+    <img src="{{url_for('static',filename='nlpPipeline.jpg')}}" />
+    <p style="font-family:Candara;font-size:16px;">
+        7. Define a function to train the data. This will disable the other pipes (shown above) for optimisation.
+        The first Tqdm will show how many of the samples from Training Data have been processed.
+        The number of iterations is how many times the method loops through the Training Data. After each iteration, the data is shuffled.
+        Dropout is a control variable which removes words from the sentence so that the AI doesn't memorise data.
+    </p>
+    <img src="{{url_for('static',filename='Training8.jpg')}}" height="250" width="500" />
+    <p style="font-family:Candara;font-size:16px;">
+        8. Make the test function which makes try to identify each appearance of 'Ronan' in the text.
+        The generator prints out the text and its type each time it thinks it has recognised an entity.
+    </p>
+    <img src="{{url_for('static',filename='Training9.jpg')}}" />
+    <p style="font-family:Candara;font-size:16px;">
+        9. After the process, you should save your model so that it can be used again. This function takes in the directory you want to save it to as an argument.
+    </p>
+    <img src="{{url_for('static',filename='TrainingSave.jpg')}}" />
+    <p style="font-family:Candara;font-size:16px;">
+        10. To test a saved model, you need to load it from the directory you saved it to. Then you just reuse the code from the test() function.
+        You may find it useful to compare your model's performance with pre-trained SpaCy. Call the test() method inside test_saved().
+    </p>
+    <img src="{{url_for('static',filename='Training10.jpg')}}" />
+    <p style="font-family:Candara;font-size:16px;">
+        11. The final step is to combine the small methods into one larger method called train_ner(). You want to create a blank language class so you pass in 'model = None', your output directory should
+        be where you want the model to be saved to. Lastly, your number of iterations should be quite high (around 100 is fine).
+    </p>
+    <img src="{{url_for('static',filename='Training11.jpg')}}" />
+    <p style="font-family:Candara;font-size:16px;">
+        12. Run the program. You will see a progress bar which indicates how much of your sample data has been added. The first set of entities return is your model working on the training data. The second is your model working on the test data.
+        The third is SpaCy's pre-trained model working on the test data.
+
+    </p>
+    <img src="{{url_for('static',filename='Results.jpg')}}"height="350" width="550" />
+
+
+</body>
+{% endblock content %}

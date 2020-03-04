@@ -1,0 +1,138 @@
+﻿<style>
+    table, th, td {
+        border: 1px solid black;
+        border-collapse: collapse;
+    }
+</style>
+{% extends "layout.html" %}
+
+{% block content %}
+<body>
+
+    <h1 style="font-family:Candara;font-size:24px;font-style:oblique;">Tutorial 1: Rule-Based Matching</h1>
+    <h2 style="font-family:Candara,serif;font-size:20px;font-style:italic,oblique;">SpaCy</h2>
+    <p style="font-family:Candara;font-size:16px;font-style:normal;">
+        SpaCy has a Rule-Based Matching engine which is more powerful that just using Regexes to find phrases
+        that you're looking for. Each test case in this tutorial explores how to apply Rule-Based Matching to look for several linguistic features.
+        As this is a tutorial for beginners, the difficulty should gradually increase with each example.
+    </p>
+    <p style="font-family:Candara;font-size:16px;font-style:normal;">
+        This tutorial assumes that you have installed SpaCy using 'pip install spacy' in Anaconda and that you have imported the following
+        features into your .py application from the library:
+    </p>
+    <img src="{{url_for('static',filename='Code1.jpg')}}" />
+    <p>Note that displaCy will allow you to visualise the blocks of text that you process, showing the POS that each token belongs to.</p>
+    <p style="font-family:Candara;font-size:16px;font-style:normal;">The next step is to pass in your vocabulary. This didn't work for me first time, so I have included a troubleshooting explanation.</p>
+    <a href="{{url_for('troubleshooting')}}">View troubleshooting tips</a>
+    <img src="{{url_for('static',filename='Code2.jpg')}}" />
+    <p style="font-family:Candara;font-size:16px;font-style:normal;">
+        Now that you have imported what is required for Rule-Based Matching, the next step is to create a method to process the
+        body of text that you want to extract information from. The arguments should be the body of text (string), the rule you are using on it to check for matches (list of dictionaries) and the
+        description of the tag that identifies a successful match (string).
+    </p>
+    <img src="{{url_for('static',filename='Code3.jpg')}}" />
+    <p>The first SpaCy feature of this method is to add your pattern, its match-tag and any callback event to be carried out on a succesful match.</p>
+    <img src="{{url_for('static',filename='Code4.jpg')}}" />
+    <p>For now, we are leaving the callback event as 'None' as it is more important to concentrate on seeing how the rules are applied to the text.</p>
+    <p>Next, you declare a string called doc which is the target text, but passed through the 'en_core_web_sm' vocabulary.</p>
+    <img src="{{url_for('static',filename='Code5.jpg')}}" />
+    <p>The document is then passed into the matcher, which will test the text against the rule and identify patterns which satisfy it. 
+    We can then print out all these patterns, as well as the details about the token by using this For Loop</p>
+    <img src="{{url_for('static',filename='Code6.jpg')}}"/>
+    <h3 style="font-family:Candara;font-size:20px;font-style:oblique;font-weight:bold">Example 1: Lemmatizing Superlative Adjectives</h3>
+    <h4 style="font-family:Candara;font-size:18px;font-style:normal;">Input Tokens:</h4>
+    <table>
+        <tr style="font-family:Candara;font-size:15px;font-style:normal;background-color:aquamarine">
+            <th>Token 1</th>
+            <th>Token 2</th>
+
+        </tr>
+        <tr style="font-family:Candara;font-size:15px;font-style:normal; background-color:aliceblue">
+            <td>IS_TITLE = True</td>
+            <td>LEMMA: "good"</td>
+        </tr>
+    </table>
+    <h4 style="font-family:Candara;font-size:18px;font-style:oblique;">Input Text:</h4>
+    <p style="font-family:Candara;font-size:14px;font-style:italic;">
+        “The good player knows how to bluff. The better player knows how to tell when their opponent is bluffing.
+        The best player knows how to make it seem like they’re bluffing when they’re not.”
+    </p>
+    <h4 style="font-family:Candara;font-size:18px;font-style:oblique;">Expected Result:</h4>
+    <p style="font-family:Candara;font-size:14px;font-style:italic;">
+        “[The good] player knows how to bluff. [The better] player knows how to tell when their opponent is bluffing.
+        [The best] player knows how to make it seem like they’re bluffing when they’re not.”
+    </p>
+    <h4 style="font-family:Candara;font-size:18px;font-style:oblique;">Explanation of Expected Result:</h4>
+    <p style="font-family:Candara;font-size:16px;font-style:normal;">
+        The first token returns words with title cases, for example (The, Who, Him). The second token returns words with the lemma 'good'. For an expression to be returned, it must match both parts of that rule.
+        Lemmatization returns the elementary form of the word, so ‘better’ and ‘best’ should revert to ‘good’. Three phrases should be identified as matches.
+    </p>
+    <h4 style="font-family:Candara;font-size:18px;font-style:oblique;">Actual Result:</h4>
+    <a href="https://explosion.ai/demos/matcher?text=The%20good%20player%20knows%20how%20to%20bluff.%20The%20better%20player%20knows%20how%20to%20tell%20when%20their%20opponent%20is%20bluffing.%20The%20best%20player%20knows%20how%20to%20make%20it%20seem%20like%20they%E2%80%99re%20bluffing%20when%20they%E2%80%99re%20not.&model=en_core_web_sm&pattern=%5B%7B%22id%22%3A2%2C%22attrs%22%3A%5B%7B%22name%22%3A%22IS_TITLE%22%2C%22value%22%3Atrue%7D%5D%7D%2C%7B%22id%22%3A3%2C%22attrs%22%3A%5B%7B%22name%22%3A%22LEMMA%22%2C%22value%22%3A%22good%22%7D%5D%7D%5D
+    ">View in Explosion.ai</a>
+    <img src="{{url_for('static',filename='TestCase1.jpg')}}" alt="Test Case" height="200" width="600" />
+    <h2 style="font-family:Candara;font-size:18px;font-style:oblique;">Example 2: Lemmatizing Tenses</h2>
+    <p style="font-family:Candara;font-size:16px;font-style:normal;">
+        The Rule-based Matcher can locate more matches if you pass in a lemma as opposed to a word. For example, if you are trying to find sentences about doing work,
+        the tense of the verb isn't relevant when it comes to deciding if the sentence is about doing work. "I am working at the moment", "He works in the shop", "He worked very hard" are all going to
+        have a match if the Lemma 'work' is a parameter.
+    </p>
+    <h4 style="font-family:Candara;font-size:16px;font-style:normal;">Input Tokens:</h4>
+    <table>
+        <tr style="font-family:Candara;font-size:15px;font-style:normal;">
+            <th>Token 1</th>
+        </tr>
+        <tr style="font-family:Candara;font-size:15px;font-style:normal;">
+            <td>LEMMA: "work"</td>
+        </tr>
+    </table>
+    <p style="font-family:Candara;font-size:14px;font-style:italic;">Syntax: pattern = [{'LEMMA': 'shoot'}]</p>
+    <h4 style="font-family:Candara;font-size:16px;font-style:oblique;">Input Text:</h4>
+    <p style="font-family:Candara;font-size:12px;font-style:italic;">
+        “This soldier shoots to kill. He spent all night shooting at the enemy soldiers and even shot at their general.”
+    </p>
+    <h4 style="font-family:Candara;font-size:16px;font-style:oblique;">Expected Result:</h4>
+    <p style="font-family:Candara;font-size:12px;font-style:italic;">
+        “This soldier [shoots] to kill. He spent all night [shooting] at the enemy soldiers and even [shot] at their general.”
+    </p>
+    <h4 style="font-family:Candara;font-size:16px;font-style:oblique;">Explanation of Expected Result:</h4>
+    <p style="font-family:Candara;font-size:18px;font-style:normal;">
+        Lemmatization reverts verbs into the present tense. All 3 matches are a derivative of the lemma 'shoot'.
+    </p>
+    <h4 style="font-family:Candara;font-size:16px;font-style:oblique;">Actual Result:</h4>
+    <img src="{{url_for('static',filename='TestCase2.jpg')}}" alt="Test Case" height="160" width="460" />
+    <h3 style="font-family:Candara;font-size:18px;font-style:oblique; font-weight:bold">Example 3: Tokens with Multiple Attributes</h3>
+    <p style="font-family:Candara;font-size:16px;font-style:normal;">
+        It can be useful to create a token, run the Matcher and see what matches are returned.
+        Then, if you get several matches, refine your results by adding additional attributes as shown in the example below.
+    </p>
+    <h4 style="font-family:Candara;font-size:16px;font-style:normal;">Input Tokens:</h4>
+    <table>
+        <tr style="font-family:Candara;font-size:15px;font-style:normal;">
+            <th style="background-color:aquamarine">Token 1</th>
+        </tr>
+        <tr style="font-family:Candara;font-size:15px;font-style:normal;">
+            <td style="background-color:floralwhite">LEMMA: "cut"</td>
+        </tr>
+    </table>
+    <p style="font-family:Candara;font-size:14px;font-style:italic;">Syntax: pattern = [{'LEMMA': 'cut'}]</p>
+    <h4 style="font-family:Candara;font-size:16px;font-style:oblique;">Input Text:</h4>
+    <p style="font-family:Candara;font-size:14px;font-style:italic;">
+        “Who was cutting the grass earlier? I thought the man with those large cuts on his leg wasn’t able to walk properly.”
+    </p>
+    <h4 style="font-family:Candara;font-size:16px;font-style:oblique;">Expected Result:</h4>
+    <p style="font-family:Candara;font-size:14px;font-style:italic;">
+        “Who was [cutting] the grass earlier? I thought the man with those large [cuts] on his leg wasn’t able to walk properly.”
+    </p>
+    <h4 style="font-family:Candara;font-size:16px;font-style:oblique;">Explanation of Expected Result:</h4>
+    <p style="font-family:Candara;font-size:18px;font-style:normal;">
+        The verb ‘cutting’ and the plural noun ‘cuts’ both have the same lemma ‘cut’.
+        Even though they have different base meanings cut as a verb meaning to make an incision and the noun cut referring to the incision itself, both should return as matches.
+    </p>
+    <h4 style="font-family:Candara;font-size:16px;font-style:oblique;">Actual Result:</h4>
+    <img src="{{url_for('static',filename='TestCase3A.jpg')}}" alt="Test Case" height="160" width="460" />
+    <p style="font-family:Candara;font-size:18px;font-style:normal;">
+        We can reduce the number of matches returned by specifying if we are looking for a noun or a verb. This is achieved by adding a POS attribute the token.
+    </p>
+</body>
+{% endblock content %}

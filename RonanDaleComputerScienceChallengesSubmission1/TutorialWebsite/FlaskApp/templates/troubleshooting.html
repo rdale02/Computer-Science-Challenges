@@ -1,0 +1,41 @@
+﻿{% extends "layout.html" %}
+
+{% block content %}
+
+<h1 style="font-family:Candara;font-size:20px; font-style:oblique">Troubleshooting</h1>
+<p style="font-family:Candara;font-size:16px">
+    This section addresses difficulties I had while learning to use SpaCy myself, as well as how I went about resolving them.
+</p>
+<h2 style="font-family:Candara;font-size:20px; font-style:oblique">Powershell isn't installing the 'en_core_web_sm' Language Pack. What can I do to resolve this?</h2>
+<p style="font-family:Candara;font-size:16px">Powershell was able to download the library, but failed to link it with SpaCy.</p>
+<a style="font-family:Candara;font-size:16px" href="https://docs.anaconda.com/anaconda/install/windows/">1. Download the Anaconda Installer</a>
+<p style="font-family:Candara;font-size:16px";>It's possible that the installation is conflicting with libraries that you have already downloaded into Python 3.8. Changing installer to Conda may solve this straight away.</p>
+<p style="font-family:Candara;font-size:16px">
+    2. If the problem wasn't resolved at Step 1, go to VS Code and select "Add Environment". Select "Conda environment".
+    Name the environment 'troubleshooting' and then save it.
+</p>
+<img src="{{url_for('static',filename='troubleshooting1.jpg')}}" alt="Set up Virtual Environment" height="300" width="580" />
+
+<p style="font-family:Candara;font-size:16px">3. Open the Anaconda cmd prompt as an Administrator. Enter 'pip install spacy'</p>
+<img src="{{url_for('static',filename='troubleshooting2.jpg')}}" height="250"width="400" />
+<p style="font-family:Candara;font-size:16px">4. Still using Anaconda as an Administrator, Enter 'python -m spacy download en_core_web_sm'. Your troubleshooting environment should now include SpaCy and the English language.</p>
+<h3 style="font-family:Candara;font-size:20px; font-style:oblique">Using url_for() in Flask</h3>
+<p style="font-family:Candara;font-size:16px">When designing this website, images were not loading initially which was very frustrating. Follow these steps to add an imaget to a Flask website.</p>
+<p style="font-family:Candara;font-size:16px">
+    1. Check your project directory for a folder named 'static'. If this does not exist (it didn't in my case), create it.
+</p>
+<p style="font-family:Candara;font-size:16px">
+    2. In your .py, set static_url_path to '/static'. This allows your website to display files that are stored in that folder.
+</p>
+<img src="{{url_for('static',filename='Static.jpg')}}" alt="Static URL Path"/>
+<p style="font-family:Candara;font-size:16px">
+    3. Add some images to the 'static' folder.
+</p>
+<p style="font-family:Candara;font-size:16px">
+    4. Use the following HTML tag to add these images to your website:
+</p>
+<img src="{{url_for('static',filename='StaticHTML.jpg')}}" alt="Static URL Path Syntax" />
+<p style="font-family:Candara;font-size:16px">
+    5. Note that this url_for() takes different arguments from the url_for() that adds templates. This one takes the 'static' folder + the full name of the file including its file type.
+</p>
+{% endblock content %}
